@@ -81,14 +81,25 @@ def scan(ip, port_chunk):
             none
 
 
+def main():
+    #Get an ip from the user that will be scanned
+    ip_address = get_ip()
+    #Get range of ports to be scanned for this ip address
+    port_range = get_port_range()
+    #Generates a certain number of threads based on the range of ports give
+    max_threads = calculate_max_threads(port_range)
+    #Uses the number of max threads to divide the range of ports into roughly equal chunks
+    port_chunks = generate_port_chunks(port_range, max_threads)
 
+    #Starts timer to time how long it takes to scan all ports
+    start_time = time.time()
+
+    #Calls the scan scan function
+    with ThreadPoolExecutor(max_workers=max_threads) as executor:
+        executor.map(scan, [ip_address] * len(port_chunks), port_chunks)
+
+    end_time = time.time()
+    print(f"Scanned {port_range[1] - port_range[0]} ports in {end_time - start_time} seconds.")
 
 if __name__ == "__main__":
-    ip = get_ip()
-    port_range = get_port_range()
-    max_threads = calculate_max_threads(port_range)
-    port_chunks = generate_port_chunks(port_range, max_threads)
-    print(ip)
-    print(port_range)
-    print(max_threads)
-    print(port_chunks)
+    main()

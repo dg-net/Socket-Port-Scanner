@@ -10,13 +10,34 @@ import time
 def get_ip():
     ip = input("\nPlease enter ip address: ")
     try:
+        #Checks the users input to see if it is a valid ip address
         ip_address(ip)
         return ip
     except ValueError:
         print("\nInvalid ip address")
+        #Recursive method that calls the function again if the given ip address isn't valid
         return get_ip()
+
+def get_port_range():
+    try:
+        min_port = int(input("\nPlease enter lowest port number to be scanned: "))
+        max_port = int(input("Please enter highest port number to be scanned: "))
+    except:
+        print("\nEnter value isn't a number.")
+        return get_port_range()
+
+    if min_port > max_port:
+        print("\nInvalid range, minimum port value is greater than the maximum port number.")
+        return get_port_range()
+    elif min_port < 0 or max_port > 65535:
+        print("\nGiven values are not in the normal port range.")
+        return get_port_range()
+
+    return [min_port, max_port]
 
 if __name__ == "__main__":
     ip = get_ip()
+    port_range = get_port_range()
     print(ip)
+    print(port_range)
 

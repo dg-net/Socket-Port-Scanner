@@ -66,6 +66,21 @@ def generate_port_chunks(port_range, max_threads):
 
     return port_chunks
 
+def scan(ip, port_chunk):
+    print(f"\nScanning {ip} from port {port_chunk[0]} to port {port_chunk[1]}.")
+    #Loop through the minto the max ports
+    for port in range(port_chunk[0], port_chunk[1]):
+        #Attemps a TCP connection with the port
+        try:
+            scan_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            scan_socket.timeout(1)
+
+            scan_socket.connect(ip, port)
+            print(f"[!] {port} is open!")
+        except:
+            none
+
+
 
 
 if __name__ == "__main__":

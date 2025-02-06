@@ -36,7 +36,7 @@ def get_port_range():
 
     return [min_port, max_port]
 
-def calculate_max_threads(port_range):
+def calculate_workers(port_range):
     length = port_range[1] - port_range[0]
         
     if length < 1000:
@@ -44,16 +44,16 @@ def calculate_max_threads(port_range):
         
     return 100
 
-def generate_port_chunks(port_range, max_threads):
+def generate_port_chunks(port_range, workers):
     port_chunks = []
     # Get the average chunk size (excluding the remainder)
-    chunk_size = (int(port_range[1]) - int(port_range[0])) // max_threads
+    chunk_size = (int(port_range[1]) - int(port_range[0])) // workers
     
     start = int(port_range[0])
 
-    for i in range(max_threads):
+    for i in range(workers):
         # The first (max_threads - 1) chunks will get the chunk_size
-        if i < max_threads - 1:
+        if i < workers - 1:
             end = start + chunk_size
         else:
             # The last chunk will take the remaining ports
@@ -87,15 +87,15 @@ def main():
     #Get range of ports to be scanned for this ip address
     port_range = get_port_range()
     #Generates a certain number of threads based on the range of ports give
-    max_threads = calculate_max_threads(port_range)
+    workers = calculate_workers(port_range)
     #Uses the number of max threads to divide the range of ports into roughly equal chunks
-    port_chunks = generate_port_chunks(port_range, max_threads)
+    port_chunks = generate_port_chunks(port_range, workers)
 
     #Starts timer to time how long it takes to scan all ports
     start_time = time.time()
 
     #Calls the scan scan function
-    with ThreadPoolExecutor(max_workers=max_threads) as executor:
+    with ThreadPoolExecutor(max_workers=workers) as executor:
         executor.map(scan, [ip_address] * len(port_chunks), port_chunks)
 
     end_time = time.time()

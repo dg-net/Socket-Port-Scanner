@@ -40,15 +40,40 @@ def calculate_max_threads(port_range):
     length = port_range[1] - port_range[0]
         
     if length < 1000:
-        return int(((length/100) * 10) + 1)
+        return int((((length) / 100) * 10) + 1)
         
     return 100
+
+def generate_port_chunks(port_range, max_threads):
+    port_chunks = []
+    # Get the average chunk size (excluding the remainder)
+    chunk_size = (int(port_range[1]) - int(port_range[0])) // max_threads
+    
+    start = int(port_range[0])
+
+    for i in range(max_threads):
+        # The first (max_threads - 1) chunks will get the chunk_size
+        if i < max_threads - 1:
+            end = start + chunk_size
+        else:
+            # The last chunk will take the remaining ports
+            end = int(port_range[1])
+
+        port_chunks.append([start, end])
+
+        # Move the start to the next port after the current chunk
+        start = end + 1
+
+    return port_chunks
+
 
 
 if __name__ == "__main__":
     ip = get_ip()
     port_range = get_port_range()
     max_threads = calculate_max_threads(port_range)
+    port_chunks = generate_port_chunks(port_range, max_threads)
     print(ip)
     print(port_range)
     print(max_threads)
+    print(port_chunks)

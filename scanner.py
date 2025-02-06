@@ -19,6 +19,7 @@ def get_ip():
         return get_ip()
 
 def get_port_range():
+    #Get max and min values for ports to be scanned, ensures the entered values are integers
     try:
         min_port = int(input("\nPlease enter lowest port number to be scanned: "))
         max_port = int(input("Please enter highest port number to be scanned: "))
@@ -35,9 +36,19 @@ def get_port_range():
 
     return [min_port, max_port]
 
+def calculate_max_threads(port_range):
+    length = port_range[1] - port_range[0]
+        
+    if length < 1000:
+        return int(((length/100) * 10) + 1)
+        
+    return 100
+
+
 if __name__ == "__main__":
     ip = get_ip()
     port_range = get_port_range()
+    max_threads = calculate_max_threads(port_range)
     print(ip)
     print(port_range)
-
+    print(max_threads)
